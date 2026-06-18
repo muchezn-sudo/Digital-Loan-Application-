@@ -1,0 +1,5 @@
+{
+  "name": "Digital Loan Application",
+  "description": "A comprehensive, modern end-to-end full-stack Digital Loan Application & Approval System with AI Credit Scoring, multi-role dashboards, and document verification.",
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
