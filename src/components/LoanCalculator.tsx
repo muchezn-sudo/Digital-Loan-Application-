@@ -31,8 +31,7 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-slate-700 font-medium">Desired Loan Amount</span>
-            <span className="text-xl font-extrabold text-blue-600">${amount.toLocaleString()}</span>
-          </div>
+<span className="text-xl font-extrabold text-blue-600">${amount.toLocaleString()}</span>          </div>
           <input
             type="range"
             id="slider-amount"
@@ -44,9 +43,9 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
             className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
           />
           <div className="flex justify-between text-xs text-slate-400 mt-1">
-            <span>$1,000</span>
-            <span>$75,000</span>
-            <span>$150,000</span>
+           <span>KSh 1,000</span>
+           <span>KSh 75,000</span>
+            <span>Ksh150,000</span>
           </div>
         </div>
 
@@ -79,13 +78,12 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
         <div className="bg-slate-50 p-4 rounded-xl">
           <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Estimated Monthly Fee</span>
           <span className="text-2xl font-black text-slate-950">${monthlyRepayment.toFixed(2)}</span>
-          <span className="text-xs text-slate-400 block mt-1">Principal + interest combined</span>
+          <span className="text-2xl font-black text-slate-950">KSh {monthlyRepayment.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
         </div>
         <div className="bg-blue-50/50 p-4 rounded-xl">
           <span className="text-xs text-blue-800 font-semibold uppercase tracking-wider block">Total Interest Margin</span>
           <span className="text-2xl font-black text-blue-900">${calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-          <span className="text-xs text-blue-700 block mt-1">8.5% flat financing rate</span>
-        </div>
+ <span className="text-2xl font-black text-blue-900">KSh {calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>        </div>
       </div>
 
       <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 flex items-start gap-2.5 mt-5">
