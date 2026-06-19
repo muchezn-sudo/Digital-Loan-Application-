@@ -77,12 +77,12 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 pt-6 border-t border-slate-100">
         <div className="bg-slate-50 p-4 rounded-xl">
           <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Estimated Monthly Fee</span>
-          <span className="text-2xl font-black text-slate-950">${monthlyRepayment.toFixed(2)}</span>
+          <span className="text-2xl font-black text-slate-950">Ksh{monthlyRepayment.toFixed(2)}</span>
           <span className="text-2xl font-black text-slate-950">KSh {monthlyRepayment.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
         </div>
         <div className="bg-blue-50/50 p-4 rounded-xl">
           <span className="text-xs text-blue-800 font-semibold uppercase tracking-wider block">Total Interest Margin</span>
-          <span className="text-2xl font-black text-blue-900">${calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+          <span className="text-2xl font-black text-blue-900">Ksh{calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
  <span className="text-2xl font-black text-blue-900">KSh {calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>        </div>
       </div>
 
