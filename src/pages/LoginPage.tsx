@@ -29,28 +29,25 @@ export default function LoginPage({ onLoginSuccess, onNavigate }: LoginPageProps
         body: JSON.stringify({ email, password }),
       });
 
+      const responseText = await res.text();
+
       if (!res.ok) {
         let errorMsg = "Login failed.";
         try {
-          const errorData = await res.json();
+          const errorData = JSON.parse(responseText);
           errorMsg = errorData.error || errorMsg;
         } catch {
-          // Fallback to text parsing if response is not JSON (e.g., 502/504 Bad Gateway HTML)
-          try {
-            const text = await res.text();
-            if (text.includes("Bad Gateway") || text.includes("Gateway Timeout") || text.includes("Render")) {
-              errorMsg = "The Render.com server is still starting up (spinning up from sleep mode). Please wait a few seconds and try again!";
-            } else {
-              errorMsg = `Server error (${res.status}). The service may be offline.`;
-            }
-          } catch {
-            errorMsg = `Server returned status code ${res.status}.`;
+          // Response is not JSON (e.g., 502/504 Bad Gateway HTML from Render)
+          if (responseText.includes("Bad Gateway") || responseText.includes("Gateway Timeout") || responseText.includes("Render")) {
+            errorMsg = "The Render.com server is still starting up (spinning up from sleep mode). Please wait a few seconds and try again!";
+          } else {
+            errorMsg = `Server error (${res.status}). The service may be offline.`;
           }
         }
         throw new Error(errorMsg);
       }
 
-      const data = await res.json();
+      const data = JSON.parse(responseText);
       onLoginSuccess(data.token, data.user);
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
