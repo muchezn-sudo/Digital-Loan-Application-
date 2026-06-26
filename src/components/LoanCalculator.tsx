@@ -31,8 +31,7 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-slate-700 font-medium">Desired Loan Amount</span>
-<span className="text-xl font-extrabold text-blue-600">${amount.toLocaleString()}</span>          </div>
-          <input
+<span className="text-xl font-extrabold text-blue-600">KSh {amount.toLocaleString()}</span>          <input
             type="range"
             id="slider-amount"
             min="1000"
