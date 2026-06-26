@@ -31,7 +31,9 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-slate-700 font-medium">Desired Loan Amount</span>
-<span className="text-xl font-extrabold text-blue-600">KSh {amount.toLocaleString()}</span>          <input
+            <span className="text-xl font-extrabold text-blue-600">KSh {amount.toLocaleString()}</span>
+          </div>
+          <input
             type="range"
             id="slider-amount"
             min="1000"
@@ -76,13 +78,12 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 pt-6 border-t border-slate-100">
         <div className="bg-slate-50 p-4 rounded-xl">
           <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Estimated Monthly Fee</span>
-          <span className="text-2xl font-black text-slate-950">Ksh{monthlyRepayment.toFixed(2)}</span>
           <span className="text-2xl font-black text-slate-950">KSh {monthlyRepayment.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
         </div>
         <div className="bg-blue-50/50 p-4 rounded-xl">
           <span className="text-xs text-blue-800 font-semibold uppercase tracking-wider block">Total Interest Margin</span>
-          <span className="text-2xl font-black text-blue-900">Ksh{calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
- <span className="text-2xl font-black text-blue-900">KSh {calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>        </div>
+          <span className="text-2xl font-black text-blue-900">KSh {calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+        </div>
       </div>
 
       <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 flex items-start gap-2.5 mt-5">
