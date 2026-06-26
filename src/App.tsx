@@ -28,7 +28,7 @@ export default function App() {
   const [tenurePreset, setTenurePreset] = useState<number | undefined>(undefined);
 
   // Restore session token on load
-  const restoreSession = async () => {
+  const restoreSession = async (shouldRedirectOnSuccess = false) => {
     const token = localStorage.getItem("veriloan_token");
     if (!token) {
       setCurrentUser(null);
@@ -50,11 +50,27 @@ export default function App() {
           fetchMyLoans(token);
           fetchNotifications(token);
         }
+
+        // Auto-redirect to appropriate dashboard if user is currently on guest/landing screens
+        if (shouldRedirectOnSuccess) {
+          if (data.user.role === "customer") {
+            setCurrentPage("customer-dashboard");
+          } else if (data.user.role === "officer") {
+            setCurrentPage("officer-dashboard");
+          } else if (data.user.role === "manager") {
+            setCurrentPage("manager-dashboard");
+          } else if (data.user.role === "admin") {
+            setCurrentPage("admin-dashboard");
+          }
+        }
       } else {
-        // Clear stale credentials if server reset
-        localStorage.removeItem("veriloan_token");
-        setCurrentUser(null);
-        setProfile(null);
+        // ONLY clear credentials if server explicitly rejects with a 401/403 (unauthorized/invalid token).
+        // If the server returns a 502/504, we are offline/starting up and should keep our token.
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("veriloan_token");
+          setCurrentUser(null);
+          setProfile(null);
+        }
       }
     } catch (e) {
       console.warn("Offline/reconnecting restore session error:", e);
@@ -62,7 +78,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    restoreSession();
+    restoreSession(true);
   }, []);
 
   const fetchMyLoans = async (token: string) => {
@@ -97,10 +113,7 @@ export default function App() {
     localStorage.setItem("veriloan_token", token);
     setCurrentUser(user);
     
-    // Log details and update views
-    await restoreSession();
-    
-    // Route role specific workspace dashboards
+    // Route role specific workspace dashboards IMMEDIATELY (no blocking)
     if (user.role === "customer") {
       setCurrentPage("customer-dashboard");
     } else if (user.role === "officer") {
@@ -112,13 +125,44 @@ export default function App() {
     } else {
       setCurrentPage("landing");
     }
+
+    // Sync any supplementary session details in the background without blocking the UI login transitions
+    try {
+      const res = await fetch("/api/auth/me", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCurrentUser(data.user);
+        setProfile(data.profile || null);
+        
+        if (data.user.role === "customer") {
+          fetchMyLoans(token);
+          fetchNotifications(token);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed background user sync:", e);
+    }
   };
 
   const handleRegisterSuccess = async (token: string, user: User) => {
     localStorage.setItem("veriloan_token", token);
     setCurrentUser(user);
-    await restoreSession();
     setCurrentPage("customer-dashboard");
+
+    try {
+      const res = await fetch("/api/auth/me", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCurrentUser(data.user);
+        setProfile(data.profile || null);
+      }
+    } catch (e) {
+      console.warn("Failed background profile registration sync:", e);
+    }
   };
 
   const handleLogout = async () => {

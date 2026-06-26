@@ -73,11 +73,26 @@ export default function ManagerDashboard({ currentUser, onNavigate }: ManagerDas
     }
   };
 
-  if (loading || !data) {
+  if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center font-sans animate-pulse">
         <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-600 rounded-full border-t-transparent mb-4"></div>
         <p className="text-slate-500 text-xs">Generating neural analytics and transaction ledgers...</p>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center font-sans space-y-4">
+        <ShieldAlert className="w-10 h-10 text-rose-500 mx-auto" />
+        <p className="text-slate-700 text-sm font-semibold">Unable to fetch executive metrics at this time.</p>
+        <button
+          onClick={fetchData}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-sm inline-block"
+        >
+          Retry Connection
+        </button>
       </div>
     );
   }
