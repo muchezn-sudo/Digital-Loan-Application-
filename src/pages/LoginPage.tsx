@@ -29,11 +29,28 @@ export default function LoginPage({ onLoginSuccess, onNavigate }: LoginPageProps
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Login action failed. Check email or password.");
+        let errorMsg = "Login failed.";
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.error || errorMsg;
+        } catch {
+          // Fallback to text parsing if response is not JSON (e.g., 502/504 Bad Gateway HTML)
+          try {
+            const text = await res.text();
+            if (text.includes("Bad Gateway") || text.includes("Gateway Timeout") || text.includes("Render")) {
+              errorMsg = "The Render.com server is still starting up (spinning up from sleep mode). Please wait a few seconds and try again!";
+            } else {
+              errorMsg = `Server error (${res.status}). The service may be offline.`;
+            }
+          } catch {
+            errorMsg = `Server returned status code ${res.status}.`;
+          }
+        }
+        throw new Error(errorMsg);
       }
 
+      const data = await res.json();
       onLoginSuccess(data.token, data.user);
     } catch (err: any) {
       setError(err.message || "Something went wrong.");

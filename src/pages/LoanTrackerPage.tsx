@@ -111,12 +111,12 @@ export default function LoanTrackerPage({ loanId, onNavigate }: LoanTrackerPageP
         </div>
         <div className="space-y-1">
           <span className="card-label">Requested Principal</span>
-          <h2 className="text-xl font-extrabold text-sky-600">${loan.loanAmount.toLocaleString()}</h2>
+          <h2 className="text-xl font-extrabold text-sky-600">KSh {loan.loanAmount.toLocaleString()}</h2>
           <span className="text-xs text-slate-550">{loan.tenureMonths} mos tenure</span>
         </div>
         <div className="space-y-1">
           <span className="card-label">Amortized Installment</span>
-          <h2 className="text-base font-extrabold text-[#0f172a]">${loan.monthlyRepayment.toFixed(2)}/mo</h2>
+          <h2 className="text-base font-extrabold text-[#0f172a]">KSh {Math.round(loan.monthlyRepayment).toLocaleString()}/mo</h2>
           <span className="text-xs text-slate-550 font-medium">Principal + FLAT APR</span>
         </div>
         <div className="space-y-1">
@@ -228,7 +228,7 @@ export default function LoanTrackerPage({ loanId, onNavigate }: LoanTrackerPageP
                         <strong className="text-slate-900 font-bold">
                           {doc.documentType === "payslip"
                             ? doc.ocrData.extractedSalary
-                              ? `$${(doc.ocrData.extractedSalary).toLocaleString()}`
+                              ? `KSh ${Math.round(doc.ocrData.extractedSalary).toLocaleString()}`
                               : "Not identified"
                             : doc.ocrData.extractedIdNumber || "Not Identified"}
                         </strong>

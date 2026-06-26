@@ -221,7 +221,7 @@ export default function OfficerDashboard({ currentUser, onNavigate }: OfficerDas
                     </div>
 
                     <div className="flex justify-between items-center mt-2 pt-2 border-t border-slate-100/10">
-                      <span className="text-[11px] font-extrabold text-sky-600 font-sans">${l.loanAmount.toLocaleString()}</span>
+                      <span className="text-[11px] font-extrabold text-sky-600 font-sans">KSh {l.loanAmount.toLocaleString()}</span>
                       {getStatusBadge(l.status)}
                     </div>
                   </div>
@@ -252,13 +252,13 @@ export default function OfficerDashboard({ currentUser, onNavigate }: OfficerDas
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-xl space-y-1">
                   <span className="card-label block mb-1">Capital Sum</span>
-                  <div className="text-xl font-extrabold text-slate-950">${detailData.loan.loanAmount.toLocaleString()}</div>
+                  <div className="text-xl font-extrabold text-slate-950">KSh {detailData.loan.loanAmount.toLocaleString()}</div>
                   <span className="text-[9px] text-slate-400 block font-bold font-mono uppercase">{detailData.loan.tenureMonths} Mos term</span>
                 </div>
 
                 <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-xl space-y-1">
                   <span className="card-label block mb-1">Instalment Repayment</span>
-                  <div className="text-xl font-extrabold text-slate-950">${detailData.loan.monthlyRepayment.toFixed(2)}/mo</div>
+                  <div className="text-xl font-extrabold text-slate-950">KSh {Math.round(detailData.loan.monthlyRepayment).toLocaleString()}/mo</div>
                   <span className="text-[9px] text-slate-400 block font-bold font-mono uppercase">8.5% Flat Financing</span>
                 </div>
 
@@ -333,7 +333,7 @@ export default function OfficerDashboard({ currentUser, onNavigate }: OfficerDas
                             <div>
                               <span className="text-[10px] text-slate-400 block uppercase font-semibold">Verified value</span>
                               <strong className="text-slate-900 font-black">
-                                {doc.ocrData.extractedSalary ? `$${doc.ocrData.extractedSalary.toLocaleString()}` : doc.ocrData.extractedIdNumber || "Not recorded"}
+                                {doc.ocrData.extractedSalary ? `KSh ${Math.round(doc.ocrData.extractedSalary).toLocaleString()}` : doc.ocrData.extractedIdNumber || "Not recorded"}
                               </strong>
                             </div>
                             <div>

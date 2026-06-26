@@ -193,7 +193,7 @@ export default function MultiStepLoanForm({
                 </div>
                 <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-xl space-y-1">
                   <span className="text-[10px] text-blue-700 font-bold uppercase block tracking-wider">Projection repays</span>
-                  <span className="text-xl font-extrabold text-blue-900">${estRepayment.toFixed(2)} / mo</span>
+                  <span className="text-xl font-extrabold text-blue-900">KSh {Math.round(estRepayment).toLocaleString()} / mo</span>
                 </div>
               </div>
             </div>
@@ -202,7 +202,7 @@ export default function MultiStepLoanForm({
             <div>
               <div className="flex justify-between items-center mb-1.5">
                 <span className="text-slate-700 text-xs font-semibold uppercase tracking-wider block">Requested Principal</span>
-                <span className="text-lg font-extrabold text-blue-600">${amount.toLocaleString()}</span>
+                <span className="text-lg font-extrabold text-blue-600">KSh {amount.toLocaleString()}</span>
               </div>
               <input
                 type="range"
@@ -214,8 +214,8 @@ export default function MultiStepLoanForm({
                 className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
               <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-                <span>$2,000</span>
-                <span>$100,000 Max Limit</span>
+                <span>KSh 2,000</span>
+                <span>KSh 100,000 Max Limit</span>
               </div>
             </div>
 
@@ -381,7 +381,7 @@ export default function MultiStepLoanForm({
               </div>
               <div>
                 <span className="text-slate-400 block font-semibold mb-0.5">Direct Funding Limit</span>
-                <strong className="text-slate-900 font-bold">${amount.toLocaleString()} ({tenure} mos)</strong>
+                <strong className="text-slate-900 font-bold">KSh {amount.toLocaleString()} ({tenure} mos)</strong>
               </div>
               <div className="col-span-2">
                 <span className="text-slate-400 block font-semibold mb-0.5">Financing Purpose</span>

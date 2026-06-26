@@ -522,7 +522,7 @@ async function verifyOCRWithAI(
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   // Configure JSON and raw body parsing sizes to allow base64 document payloads
   app.use(express.json({ limit: "25mb" }));

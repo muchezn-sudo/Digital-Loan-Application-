@@ -10,21 +10,21 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
     {
       title: "EcoSmart Green Mortgage",
       apr: "7.9% APR",
-      limit: "$5,000 - $150,050",
+      limit: "KSh 5,000 - KSh 150,050",
       desc: "Zero emission heating, solar paneling, and wall insulation retrofits.",
       features: ["No early setup fee", "AI pre-qualification in 2 mins", "Direct contractor dispatch available"]
     },
     {
       title: "SME Commercial Accelerator",
       apr: "8.9% APR",
-      limit: "$10,000 - $350,000",
+      limit: "KSh 10,000 - KSh 350,000",
       desc: "Equipment upgrade, stock replenishing, or corporate expansion workspace investments.",
       features: ["Flexible cash flow match repayments", "OCR statement processing", "Executive threshold manager sign-off"]
     },
     {
       title: "Personal Liquidity Buffer",
       apr: "9.5% APR",
-      limit: "$1,000 - $25,000",
+      limit: "KSh 1,000 - KSh 25,000",
       desc: "Unsecured personal emergency bridging, education cost assist, or family travel needs.",
       features: ["Same-day bank disbursement", "Pure credit rating backing", "No collateral required"]
     }
@@ -123,7 +123,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
             </div>
             <h3 className="font-bold text-slate-900 text-sm md:text-base">Escalated Vault Guard</h3>
             <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Large loan increments ($50,050+) are automatically routed to director queues under strict access logs.
+              Large loan increments (KSh 50,050+) are automatically routed to director queues under strict access logs.
             </p>
           </div>
         </div>

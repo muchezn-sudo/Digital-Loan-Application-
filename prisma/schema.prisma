@@ -1,0 +1,248 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  APPLICANT
+  LOAN_OFFICER
+  LOAN_MANAGER
+  SYSTEM_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum EmploymentStatus {
+  FULL_TIME
+  PART_TIME
+  SELF_EMPLOYED
+  UNEMPLOYED
+  RETIRED
+}
+
+enum LoanStatus {
+  SUBMITTED
+  AI_ASSESSED
+  OFFICER_REVIEWED
+  MANAGER_APPROVED
+  DISBURSED
+  ACTIVE_REPAYMENT
+  REJECTED
+  CLOSED
+}
+
+enum DocumentType {
+  NATIONAL_ID
+  PASSPORT
+  PAYSLIP
+  BANK_STATEMENT
+  UTILITY_BILL
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  FLAGGED
+}
+
+enum Decision {
+  APPROVE
+  REJECT
+  REQUEST_INFO
+}
+
+enum DisbursementStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CREDIT_CARD
+  DIRECT_DEBIT
+  MOBILE_WALLET
+}
+
+model User {
+  id           String     @id @default(uuid())
+  firstName    String     @map("first_name")
+  lastName     String     @map("last_name")
+  email        String     @unique
+  phone        String?
+  passwordHash String     @map("password_hash")
+  role         Role       @default(APPLICANT)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  profile       ApplicantProfile?
+  approvals     Approval[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+
+  @@map("users")
+}
+
+model ApplicantProfile {
+  id                 String           @id @default(uuid())
+  userId             String           @unique @map("user_id")
+  nationalId         String           @map("national_id")
+  dateOfBirth        DateTime         @map("date_of_birth")
+  employmentStatus   EmploymentStatus @map("employment_status")
+  employerName       String?          @map("employer_name")
+  employmentDuration Int?             @map("employment_duration_months")
+  monthlyIncome      Decimal          @map("monthly_income") @db.Decimal(12, 2)
+  monthlyExpenses    Decimal          @map("monthly_expenses") @db.Decimal(12, 2)
+  monthlyDebt        Decimal          @map("monthly_debt") @db.Decimal(12, 2)
+  address            String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("applicant_profiles")
+}
+
+model LoanProduct {
+  id              String            @id @default(uuid())
+  productName     String            @map("product_name")
+  interestRate    Decimal           @map("interest_rate") @db.Decimal(5, 2)
+  minimumAmount   Decimal           @map("minimum_amount") @db.Decimal(12, 2)
+  maximumAmount   Decimal           @map("maximum_amount") @db.Decimal(12, 2)
+  minimumTerm     Int               @map("minimum_term_months")
+  maximumTerm     Int               @map("maximum_term_months")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  applications    LoanApplication[]
+
+  @@map("loan_products")
+}
+
+model LoanApplication {
+  id                 String     @id @default(uuid())
+  applicantId        String     @map("applicant_id")
+  productId          String     @map("product_id")
+  requestedAmount    Decimal    @map("requested_amount") @db.Decimal(12, 2)
+  requestedTerm      Int        @map("requested_term_months")
+  monthlyIncome      Decimal    @map("monthly_income") @db.Decimal(12, 2)
+  monthlyDebt        Decimal    @map("monthly_debt") @db.Decimal(12, 2)
+  debtToIncomeRatio  Decimal    @map("debt_to_income_ratio") @db.Decimal(5, 2)
+  estimatedCreditScore Int      @map("estimated_credit_score")
+  riskLevel          String     @map("risk_level")
+  status             LoanStatus @default(SUBMITTED)
+  submittedAt        DateTime   @default(now()) @map("submitted_at")
+
+  product       LoanProduct    @relation(fields: [productId], references: [id])
+  documents     Document[]
+  aiAssessments AIAssessment[]
+  approvals     Approval[]
+  loans         Loan[]
+
+  @@map("loan_applications")
+}
+
+model Document {
+  id                 String             @id @default(uuid())
+  applicationId      String             @map("application_id")
+  documentType       DocumentType       @map("document_type")
+  fileName           String             @map("file_name")
+  cloudUrl           String             @map("cloud_url")
+  uploadedAt         DateTime           @default(now()) @map("uploaded_at")
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+model AIAssessment {
+  id               String   @id @default(uuid())
+  applicationId    String   @map("application_id")
+  aiScore          Int      @map("ai_score")
+  riskRating       String   @map("risk_rating")
+  underwriterNotes String   @map("underwriter_notes") @db.Text
+  aiResponse       Json     @map("ai_response")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("ai_assessments")
+}
+
+model Approval {
+  id            String   @id @default(uuid())
+  applicationId String   @map("application_id")
+  reviewerId    String   @map("reviewer_id")
+  reviewerRole  Role     @map("reviewer_role")
+  decision      Decision
+  comments      String?  @db.Text
+  timestamp     DateTime @default(now())
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  reviewer    User            @relation(fields: [reviewerId], references: [id])
+
+  @@map("approvals")
+}
+
+model Loan {
+  id                 String             @id @default(uuid())
+  applicationId      String             @map("application_id")
+  approvedAmount     Decimal            @map("approved_amount") @db.Decimal(12, 2)
+  interestRate       Decimal            @map("interest_rate") @db.Decimal(5, 2)
+  repaymentTerm      Int                @map("repayment_term_months")
+  disbursementDate   DateTime?          @map("disbursement_date")
+  outstandingBalance Decimal            @map("outstanding_balance") @db.Decimal(12, 2)
+  status             String             @default("ACTIVE")
+  disbursementStatus DisbursementStatus @default(PENDING) @map("disbursement_status")
+
+  application LoanApplication @relation(fields: [applicationId], references: [id])
+  repayments  Repayment[]
+
+  @@map("loans")
+}
+
+model Repayment {
+  id                  String        @id @default(uuid())
+  loanId              String        @map("loan_id")
+  paymentAmount       Decimal       @map("payment_amount") @db.Decimal(12, 2)
+  paymentDate         DateTime      @default(now()) @map("payment_date")
+  paymentMethod       PaymentMethod @map("payment_method")
+  balanceAfterPayment Decimal       @map("balance_after_payment") @db.Decimal(12, 2)
+
+  loan Loan @relation(fields: [loanId], references: [id], onDelete: Cascade)
+
+  @@map("repayments")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  title     String
+  message   String   @db.Text
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  ipAddress  String?  @map("ip_address")
+  timestamp  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}

@@ -104,3 +104,11 @@ export interface ManagerAnalytics {
   portfolioData: Array<{ name: string; value: number }>;
   weeklyData: Array<{ week: string; count: number; value: number }>;
 }
+
+/**
+ * Standardized Kenyan Shilling formatter
+ */
+export function formatKES(amount: number): string {
+  return "KSh " + Math.round(amount).toLocaleString("en-KE");
+}
+

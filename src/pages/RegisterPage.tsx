@@ -47,11 +47,27 @@ export default function RegisterPage({ onRegisterSuccess, onNavigate }: Register
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Profile generation failed.");
+        let errorMsg = "Registration failed.";
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.error || errorMsg;
+        } catch {
+          try {
+            const text = await res.text();
+            if (text.includes("Bad Gateway") || text.includes("Gateway Timeout") || text.includes("Render")) {
+              errorMsg = "The Render.com server is still starting up (spinning up from sleep mode). Please wait a few seconds and try again!";
+            } else {
+              errorMsg = `Server error (${res.status}). The service may be offline.`;
+            }
+          } catch {
+            errorMsg = `Server returned status code ${res.status}.`;
+          }
+        }
+        throw new Error(errorMsg);
       }
 
+      const data = await res.json();
       onRegisterSuccess(data.token, data.user);
     } catch (err: any) {
       setError(err.message || "An error occurred.");
@@ -176,7 +192,7 @@ export default function RegisterPage({ onRegisterSuccess, onNavigate }: Register
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Declared Monthly Income ($)</label>
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Declared Monthly Income (KSh)</label>
               <input
                 type="number"
                 id="register-income"
@@ -191,7 +207,7 @@ export default function RegisterPage({ onRegisterSuccess, onNavigate }: Register
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-              Existing Monthly Debts & Loan Expenses ($): <span className="text-indigo-600 font-extrabold">${existingDebts}</span>
+              Existing Monthly Debts & Loan Expenses (KSh): <span className="text-indigo-600 font-extrabold">KSh {existingDebts}</span>
             </label>
             <input
               type="range"
@@ -204,9 +220,9 @@ export default function RegisterPage({ onRegisterSuccess, onNavigate }: Register
               className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
             />
             <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-              <span>$0 (Debt Free)</span>
-              <span>$2,500</span>
-              <span>$5,000 (Highly Leveraged)</span>
+              <span>KSh 0 (Debt Free)</span>
+              <span>KSh 2,500</span>
+              <span>KSh 5,000 (Highly Leveraged)</span>
             </div>
           </div>
 

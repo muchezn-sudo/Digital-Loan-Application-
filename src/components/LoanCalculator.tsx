@@ -44,9 +44,9 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
             className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
           />
           <div className="flex justify-between text-xs text-slate-400 mt-1">
-           <span>KSh 1,000</span>
-           <span>KSh 75,000</span>
-            <span>Ksh150,000</span>
+            <span>KSh 1,000</span>
+            <span>KSh 75,000</span>
+            <span>KSh 150,000</span>
           </div>
         </div>
 
@@ -78,11 +78,13 @@ export default function LoanCalculator({ onApplyPreset }: LoanCalculatorProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 pt-6 border-t border-slate-100">
         <div className="bg-slate-50 p-4 rounded-xl">
           <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider block">Estimated Monthly Fee</span>
-          <span className="text-2xl font-black text-slate-950">KSh {monthlyRepayment.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+          <span className="text-2xl font-black text-slate-950">KSh {Math.round(monthlyRepayment).toLocaleString()}</span>
+          <span className="text-xs text-slate-400 block mt-1">Principal + interest combined</span>
         </div>
         <div className="bg-blue-50/50 p-4 rounded-xl">
           <span className="text-xs text-blue-800 font-semibold uppercase tracking-wider block">Total Interest Margin</span>
-          <span className="text-2xl font-black text-blue-900">KSh {calculatedInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+          <span className="text-2xl font-black text-blue-900">KSh {Math.round(calculatedInterest).toLocaleString()}</span>
+          <span className="text-xs text-blue-700 block mt-1">8.5% flat financing rate</span>
         </div>
       </div>
 

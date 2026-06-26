@@ -32,7 +32,7 @@ export default function ManagerDashboard({ currentUser, onNavigate }: ManagerDas
       });
       if (queueRes.ok) {
         const queueJson: LoanApplication[] = await queueRes.json();
-        // Escalated / Priority items: status is approved (ready for disburse) OR under_review with high amount (> $50,000)
+        // Escalated / Priority items: status is approved (ready for disburse) OR under_review with high amount (> KSh 50,000)
         const priority = queueJson.filter(l => 
           l.status === "approved" || 
           (l.loanAmount > 50000 && (l.status === "submitted" || l.status === "verified" || l.status === "under_review"))
@@ -129,7 +129,7 @@ export default function ManagerDashboard({ currentUser, onNavigate }: ManagerDas
         <div className="card space-y-2">
           <span className="card-label">Capital Portfolio Value</span>
           <div className="flex justify-between items-baseline">
-            <h3 className="text-2xl font-extrabold text-sky-600">${analytics.totalPortfolioValue.toLocaleString()}</h3>
+            <h3 className="text-2xl font-extrabold text-sky-600">KSh {analytics.totalPortfolioValue.toLocaleString()}</h3>
             <span className="text-emerald-650 text-[10px] font-bold font-mono">Secure Backing</span>
           </div>
           <p className="text-[10px] text-slate-400">Outstanding principal pool aggregate</p>
@@ -151,7 +151,7 @@ export default function ManagerDashboard({ currentUser, onNavigate }: ManagerDas
                 <YAxis stroke="#94a3b8" />
                 <Tooltip />
                 <Legend />
-                <Bar name="Credit Requests ($)" dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                <Bar name="Credit Requests (KSh)" dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -180,7 +180,7 @@ export default function ManagerDashboard({ currentUser, onNavigate }: ManagerDas
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: any) => `$${value.toLocaleString()}`} />
+                  <Tooltip formatter={(value: any) => "KSh " + value.toLocaleString()} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -226,7 +226,7 @@ export default function ManagerDashboard({ currentUser, onNavigate }: ManagerDas
                   <tr key={e.id} className="hover:bg-slate-50 transition-colors">
                     <td className="p-3 font-bold text-slate-900">{e.referenceNumber}</td>
                     <td className="p-3 font-medium text-slate-950">{e.applicantName}</td>
-                    <td className="p-3 font-bold text-sky-600 text-sm">${e.loanAmount.toLocaleString()}</td>
+                    <td className="p-3 font-bold text-sky-600 text-sm">KSh {e.loanAmount.toLocaleString()}</td>
                     <td className="p-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
                         e.riskLevel === "Low" ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800"
